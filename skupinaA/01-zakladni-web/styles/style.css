@@ -20,4 +20,73 @@ p {
     font-family: 'Times New Roman', Times, serif;
     font-size: 16px;
     line-height: 1.5;
+    max-width: fit-content;
+}
+
+h1 {
+    font-size: 36px;
+    text-align: center;
+    color: #007BFF;
+}
+
+h1, h2, h3 {
+    color: #237eb7;
+}
+
+header, footer {
+    background-color: #333;
+    color: white;
+    padding: 1rem /* 16px */;
+    text-align: center;
+    border-radius: 16px;
+}
+
+footer p {
+    margin: unset;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1rem /* 16px */;
+}
+
+.page-wrapper {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 1rem /* 16px */;
+    margin-bottom: 1rem /* 16px */;
+}
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 1rem /* 16px */;
+    margin-top: 1rem /* 16px */;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem /* 16px */;
+    margin-bottom: 1rem /* 16px */;
+}
+
+nav li {
+    box-sizing: border-box;
+    padding: 0.5rem /* 8px */;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+nav li:hover {
+    background-color: #0080ff;
+    color: white;
 }
