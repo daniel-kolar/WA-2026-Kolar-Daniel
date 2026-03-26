@@ -18,7 +18,7 @@ class BookController {
     // Zpracuje odeslaný formulář a uloží knihu do databáze
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /skupinaA/BooksApp/public/index.php');
+            header('Location: /WA-2026-Kolar-Daniel/skupinaA/BooksApp/public/index.php');
             exit();
         }
 
@@ -45,7 +45,7 @@ class BookController {
         // Zavoláme metodu create() na modelu – ta provede INSERT do DB
         if ($book->create()) {
             // Po úspěšném uložení přesměrujeme na seznam knih
-            header('Location: /skupinaA/BooksApp/public/index.php');
+            header('Location: /WA-2026-Kolar-Daniel/skupinaA/BooksApp/public/index.php');
             exit();
         } else {
             echo "Nepodařilo se uložit knihu do databáze.";

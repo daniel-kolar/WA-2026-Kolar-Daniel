@@ -14,7 +14,7 @@
         </div>
 
         <div>
-            <form action="/skupinaA/BooksApp/public/index.php?url=book/store" method="POST" enctype="multipart/form-data">
+            <form action="/WA-2026-Kolar-Daniel/skupinaA/BooksApp/public/index.php?url=book/store" method="POST" enctype="multipart/form-data">
                 <div>
                     <div>
                         <label for="title">Název knihy*</label>
