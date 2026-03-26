@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc -l /c/xampp/htdocs/WA-2026-Kolar-Daniel/skupinaA/BooksApp/core/*.php /c/xampp/htdocs/WA-2026-Kolar-Daniel/skupinaA/BooksApp/config/*.php)",
+      "Bash(find /c/xampp/htdocs/WA-2026-Kolar-Daniel/skupinaA/BooksApp -name \"*.php\" -exec wc -l {} +)"
+    ]
+  }
+}

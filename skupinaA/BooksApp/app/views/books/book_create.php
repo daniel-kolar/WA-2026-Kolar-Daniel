@@ -14,7 +14,7 @@
         </div>
 
         <div>
-            <form action="../controllers/BookController.php" method="POST" enctype="multipart/form-data">
+            <form action="/skupinaA/BooksApp/public/index.php?url=book/store" method="POST" enctype="multipart/form-data">
                 <div>
                     <div>
                         <label for="title">Název knihy*</label>
