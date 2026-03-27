@@ -13,8 +13,8 @@
 
         <nav>
             <ul>
-                <li><a href="/WA-2026-Kolar-Daniel/skupinaA/BooksApp/public/index.php">Domů - seznam knih</a></li>
-                <li><a href="/WA-2026-Kolar-Daniel/skupinaA/BooksApp/public/index.php?url=book/create">Přidat knihu</a></li>
+                <li><a href="<?= BASE_URL ?>/index.php">Domů - seznam knih</a></li>
+                <li><a href="<?= BASE_URL ?>/index.php?url=book/create">Přidat knihu</a></li>
             </ul>
         </nav>
     </header>
