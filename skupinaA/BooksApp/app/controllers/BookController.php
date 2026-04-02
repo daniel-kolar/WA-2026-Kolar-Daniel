@@ -1,55 +1,235 @@
 <?php
 
 class BookController {
-    // Metoda pro zobrazení seznamu knih (výchozí akce pro tento kontroler)
+
+    // 0. Výchozí metoda pro zobrazení úvodní stránky
+    // 0. Výchozí metoda pro zobrazení úvodní stránky včetně seznamu knih
     public function index() {
-        // V dalších krocích se zde přidá komunikace s modelem pro získání dat o knihách z databáze, ale prozatím se zobrazí statická stránka s knihami.
-        // (např. načtení všech uloženách knih)
-
-        // Nyní se pouze načte (vloží) připravený soubor s HTML kódem pro zobrazení seznamu knih, který se nachází v adresáři views/books/books_list.php
-        require_once '../app/views/books/books_list.php';
-    }
-
-    // Zobrazí formulář pro přidání nové knihy
-    public function create() {
-        require_once '../app/views/books/book_create.php';
-    }
-
-    // Zpracuje odeslaný formulář a uloží knihu do databáze (store = uložit; místo save používáme store, aby nedošlo k záměně s metodou create() v modelu)
-    public function store() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /WA-2026-Kolar-Daniel/skupinaA/BooksApp/public/index.php'); // Pokud není odeslán formulář metodou POST, přesměrujeme na seznam knih (neumožníme přímý přístup k této akci bez odeslání formuláře)
-            exit();
-        }
-
-        // Načteme Database a Book model
+        // Načtení potřebných tříd
         require_once '../app/models/Database.php';
         require_once '../app/models/Book.php';
 
-        // Získáme připojení k databázi
+        // Vytvoření připojení k databázi
         $database = new Database();
         $db = $database->getConnection();
 
-        // Vytvoříme instanci modelu a naplníme ji daty z formuláře
-        $book = new Book($db);
-        $book->title       = $_POST['title']       ?? '';
-        $book->author      = $_POST['author']      ?? '';
-        $book->isbn        = $_POST['isbn']        ?? '';
-        $book->year        = $_POST['year']        ?? '';
-        $book->category    = $_POST['category']    ?? '';
-        $book->subcategory = $_POST['subcategory'] ?? '';
-        $book->price       = $_POST['price']       ?? '';
-        $book->link        = $_POST['link']        ?? '';
-        $book->description = $_POST['description'] ?? '';
+        // Inicializace modelu a získání dat
+        $bookModel = new Book($db);
+        $books = $bookModel->getAll(); // Proměnná $books nyní obsahuje pole všech knih
+        
+        // Načte se (vloží) připravený soubor s HTML strukturou
+        require_once '../app/views/books/books_list.php';
+    }
 
-        // Zavoláme metodu create() na modelu – ta provede INSERT do DB
-        if ($book->create()) {
-            // Po úspěšném uložení přesměrujeme na seznam knih
-            header('Location: /WA-2026-Kolar-Daniel/skupinaA/BooksApp/public/index.php');
-            echo "Kniha byla úspěšně uložena do databáze.";
-            exit();
+    // 1. Zobrazení formuláře pro přidání nové knihy
+    public function create() {
+        // Zde se pouze načte (vloží) připravený soubor s HTML formulářem
+        require_once '../app/views/books/book_create.php';
+    }
+
+    // 2. Zpracování dat odeslaných z formuláře
+    public function store() {
+        // Kontrola, zda byl formulář odeslán metodou POST
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            
+            // 1. Získání a očištění textových dat (ochrana proti XSS)
+            $title = htmlspecialchars($_POST['title'] ?? '');
+            $author = htmlspecialchars($_POST['author'] ?? '');
+            $isbn = htmlspecialchars($_POST['isbn'] ?? '');
+            $category = htmlspecialchars($_POST['category'] ?? '');
+            $subcategory = htmlspecialchars($_POST['subcategory'] ?? '');
+            
+            // U číselných hodnot se provádí explicitní přetypování
+            $year = (int)($_POST['year'] ?? 0);
+            $price = (float)($_POST['price'] ?? 0);
+            
+            $link = htmlspecialchars($_POST['link'] ?? '');
+            $description = htmlspecialchars($_POST['description'] ?? '');
+
+            // Prozatímní zástupce pro obrázky (bude řešeno v budoucnu)
+            $uploadedImages = []; 
+
+            // 2. Komunikace s databází a modelem
+            require_once '../app/models/Database.php';
+            require_once '../app/models/Book.php';
+
+            // Vytvoření připojení k DB
+            $database = new Database();
+            $db = $database->getConnection();
+
+            // Vytvoření objektu knihy a volání metody pro uložení
+            $bookModel = new Book($db);
+            $isSaved = $bookModel->create(
+                $title, 
+                $author, 
+                $category, 
+                $subcategory, 
+                $year, 
+                $price, 
+                $isbn, 
+                $description, 
+                $link, 
+                $uploadedImages
+            );
+
+            // 3. Vyhodnocení výsledku a přesměrování
+            if ($isSaved) {
+                // Vyvolání zelené notifikace pro úspěšnou akci
+                $this->addSuccessMessage('Kniha byla úspěšně uložena do databáze.');
+                
+                // Přesměrování zpět na hlavní stránku s využitím dynamické BASE_URL
+                header('Location: ' . BASE_URL . '/index.php');
+                exit;
+            } else {
+                // Vyvolání červené notifikace pro kritické selhání
+                $this->addErrorMessage('Nastala chyba. Nepodařilo se uložit knihu do databáze.');
+            }
+            
         } else {
-            echo "Nepodařilo se uložit knihu do databáze.";
+            // Pokud je stránka navštívena napřímo bez odeslání dat, zobrazí se žlutá informativní zpráva
+            $this->addNoticeMessage('Pro přidání knihy je nutné odeslat formulář.');
+        }
+    }
+
+    // --- Pomocné metody pro systém notifikací ---
+    // (V reálném projektu by tyto metody ideálně ležely v hlavní nadřazené třídě Controller)
+
+    protected function addSuccessMessage($message) {
+        // Zde by byla logika pro uložení zelené zprávy o úspěchu (např. do $_SESSION)
+    }
+
+    protected function addNoticeMessage($message) {
+        // Zde by byla logika pro uložení žluté informativní zprávy (např. do $_SESSION)
+    }
+
+    protected function addErrorMessage($message) {
+        // Zde by byla logika pro uložení červené chybové zprávy (např. do $_SESSION)
+    }
+
+    // 3. Smazání existující knihy
+    public function delete($id = null) {
+        // Kontrola, zda bylo v URL předáno ID
+        if (!$id) {
+            $this->addErrorMessage('Nebylo zadáno ID knihy ke smazání.');
+            header('Location: ' . BASE_URL . '/index.php');
+            exit;
+        }
+
+        // Načtení potřebných tříd a spojení s databází
+        require_once '../app/models/Database.php';
+        require_once '../app/models/Book.php';
+
+        $database = new Database();
+        $db = $database->getConnection();
+
+        // Inicializace modelu a zavolání metody pro smazání
+        $bookModel = new Book($db);
+        $isDeleted = $bookModel->delete($id);
+
+        // Vyhodnocení výsledku a přesměrování s notifikací
+        if ($isDeleted) {
+            // Zelená zpráva o úspěchu
+            $this->addSuccessMessage('Kniha byla trvale smazána z databáze.');
+        } else {
+            // Červená zpráva pro případ, že kniha neexistovala nebo selhal dotaz
+            $this->addErrorMessage('Nastala chyba. Knihu se nepodařilo smazat.');
+        }
+
+        // Vždy následuje návrat na seznam knih
+        header('Location: ' . BASE_URL . '/index.php');
+        exit;
+    }
+
+    // 4. Zobrazení formuláře pro úpravu existující knihy
+    public function edit($id = null) {
+        // Kontrola, zda bylo v URL vůbec předáno nějaké ID
+        if (!$id) {
+            // Vyvolání červené notifikace pro kritickou chybu
+            $this->addErrorMessage('Nebylo zadáno ID knihy k úpravě.');
+            header('Location: ' . BASE_URL . '/index.php');
+            exit;
+        }
+
+        // Načtení potřebných tříd a spojení s databází
+        require_once '../app/models/Database.php';
+        require_once '../app/models/Book.php';
+
+        $database = new Database();
+        $db = $database->getConnection();
+
+        // Získání dat o konkrétní knize
+        $bookModel = new Book($db);
+        $book = $bookModel->getById($id); // Proměnná $book nyní obsahuje asociativní pole dat
+
+        // Bezpečnostní kontrola: Zda kniha s daným ID vůbec existuje
+        if (!$book) {
+            // Pokud knihu někdo mezitím smazal, nebo uživatel zadal do URL neexistující ID
+            $this->addErrorMessage('Požadovaná kniha nebyla v databázi nalezena.');
+            header('Location: ' . BASE_URL . '/index.php');
+            exit;
+        }
+
+        // Pokud je vše v pořádku, načte se připravený soubor s HTML formulářem pro úpravy.
+        // Šablona bude mít automaticky přístup k proměnné $book.
+        require_once '../app/views/books/book_edit.php';
+    }
+
+    // 5. Zpracování dat odeslaných z editačního formuláře
+    public function update($id = null) {
+        // Zabezpečení: Je k dispozici ID a byl odeslán formulář?
+        if (!$id) {
+            $this->addErrorMessage('Nebylo zadáno ID knihy k aktualizaci.');
+            header('Location: ' . BASE_URL . '/index.php');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            
+            // 1. Získání a očištění textových dat
+            $title = htmlspecialchars($_POST['title'] ?? '');
+            $author = htmlspecialchars($_POST['author'] ?? '');
+            $isbn = htmlspecialchars($_POST['isbn'] ?? '');
+            $category = htmlspecialchars($_POST['category'] ?? '');
+            $subcategory = htmlspecialchars($_POST['subcategory'] ?? '');
+            
+            // Přetypování číselných hodnot
+            $year = (int)($_POST['year'] ?? 0);
+            $price = (float)($_POST['price'] ?? 0);
+            
+            $link = htmlspecialchars($_POST['link'] ?? '');
+            $description = htmlspecialchars($_POST['description'] ?? '');
+
+            // Prozatímní zástupce pro obrázky
+            $uploadedImages = []; 
+
+            // 2. Komunikace s databází a modelem
+            require_once '../app/models/Database.php';
+            require_once '../app/models/Book.php';
+
+            $database = new Database();
+            $db = $database->getConnection();
+
+            // 3. Volání updatu nad modelem
+            $bookModel = new Book($db);
+            $isUpdated = $bookModel->update(
+                $id, $title, $author, $category, $subcategory, 
+                $year, $price, $isbn, $description, $link, $uploadedImages
+            );
+
+            // 4. Vyhodnocení výsledku a přesměrování
+            if ($isUpdated) {
+                // Vyvolání zelené notifikace o úspěchu
+                $this->addSuccessMessage('Kniha byla úspěšně upravena.');
+                header('Location: ' . BASE_URL . '/index.php');
+                exit;
+            } else {
+                // Vyvolání červené chybové notifikace
+                $this->addErrorMessage('Nastala chyba. Změny se nepodařilo uložit.');
+            }
+            
+        } else {
+            // Pokud by někdo zkusil přistoupit na URL napřímo bez odeslání formuláře (žlutá notifikace)
+            $this->addNoticeMessage('Pro úpravu knihy je nutné odeslat formulář.');
         }
     }
 }
