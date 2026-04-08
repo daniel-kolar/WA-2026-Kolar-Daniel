@@ -31,6 +31,17 @@ class Book {
         // stmt = statement (příkaz) - Připravíme dotaz pomocí PDO
         $stmt = $this->conn->prepare($query);
 
+        // Přiřazení parametrů do vlastností objektu před sanitizací
+        $this->title       = $title;
+        $this->author      = $author;
+        $this->isbn        = $isbn;
+        $this->year        = $year;
+        $this->category    = $category;
+        $this->subcategory = $subcategory;
+        $this->price       = $price;
+        $this->link        = $link;
+        $this->description = $description;
+
         // Ochrana proti XSS – vyčistíme vstupy od HTML tagů a speciálních znaků (před uložením do DB) - tato ochrana je důležitá, protože data z formuláře mohou obsahovat škodlivý kód, který by mohl být spuštěn při zobrazení (např. v seznamu knih).
         $this->title       = htmlspecialchars(strip_tags($this->title));
         $this->author      = htmlspecialchars(strip_tags($this->author));
