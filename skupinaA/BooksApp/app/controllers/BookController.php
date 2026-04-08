@@ -106,7 +106,38 @@ class BookController {
         $_SESSION['messages']['error'][] = $message;
     }
 
-    // 3. Smazání existující knihy
+    // 3. Zobrazení detailu jedné knihy
+    public function show($id = null) {
+        // Kontrola, zda bylo v URL předáno ID
+        if (!$id) {
+            $this->addErrorMessage('Nebylo zadáno ID knihy k zobrazení.');
+            header('Location: ' . BASE_URL . '/index.php');
+            exit;
+        }
+
+        // Načtení potřebných tříd a spojení s databází
+        require_once '../app/models/Database.php';
+        require_once '../app/models/Book.php';
+
+        $database = new Database();
+        $db = $database->getConnection();
+
+        // Získání dat o konkrétní knize
+        $bookModel = new Book($db);
+        $book = $bookModel->getById($id);
+
+        // Kontrola, zda kniha s daným ID existuje
+        if (!$book) {
+            $this->addErrorMessage('Požadovaná kniha nebyla v databázi nalezena.');
+            header('Location: ' . BASE_URL . '/index.php');
+            exit;
+        }
+
+        // Načtení pohledu s detailem knihy
+        require_once '../app/views/books/book_show.php';
+    }
+
+    // 4. Smazání existující knihy
     public function delete($id = null) {
         // Kontrola, zda bylo v URL předáno ID
         if (!$id) {
