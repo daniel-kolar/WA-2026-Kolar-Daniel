@@ -95,15 +95,15 @@ class BookController {
     // (V reálném projektu by tyto metody ideálně ležely v hlavní nadřazené třídě Controller)
 
     protected function addSuccessMessage($message) {
-        // Zde by byla logika pro uložení zelené zprávy o úspěchu (např. do $_SESSION)
+        $_SESSION['messages']['success'][] = $message;
     }
 
     protected function addNoticeMessage($message) {
-        // Zde by byla logika pro uložení žluté informativní zprávy (např. do $_SESSION)
+        $_SESSION['messages']['notice'][] = $message;
     }
 
     protected function addErrorMessage($message) {
-        // Zde by byla logika pro uložení červené chybové zprávy (např. do $_SESSION)
+        $_SESSION['messages']['error'][] = $message;
     }
 
     // 3. Smazání existující knihy

@@ -32,6 +32,27 @@
     </header>
 
     <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
+
+        <?php if (isset($_SESSION['messages']) && !empty($_SESSION['messages'])): ?>
+            <div class="notifications-container mb-6">
+                <?php foreach ($_SESSION['messages'] as $type => $messages): ?>
+                    <?php
+                        $classes = 'border px-4 py-3 rounded-lg mb-2 font-medium';
+                        if ($type === 'success') $classes .= ' bg-green-50 border-green-400 text-green-800';
+                        elseif ($type === 'error')   $classes .= ' bg-red-50 border-red-400 text-red-800';
+                        elseif ($type === 'notice')  $classes .= ' bg-amber-50 border-amber-400 text-amber-800';
+                        else                         $classes .= ' bg-slate-50 border-slate-400 text-slate-800';
+                    ?>
+                    <?php foreach ($messages as $message): ?>
+                        <div class="<?= $classes ?>">
+                            <?= htmlspecialchars($message) ?>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
+            <?php unset($_SESSION['messages']); ?>
+        <?php endif; ?>
+
         <h2 class="text-2xl font-semibold text-slate-700 mb-6">Dostupné knihy</h2>
 
         <?php if (empty($books)): ?>
