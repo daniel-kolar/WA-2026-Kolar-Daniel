@@ -65,13 +65,17 @@
                                   class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition resize-none"></textarea>
                     </div>
 
-                    <div class="sm:col-span-2">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Obrázky (lze nahrát více)</label>
-                        <label class="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 rounded-lg p-6 cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-colors duration-200">
-                            <span class="text-slate-500 text-sm font-medium">Klikni pro výběr souborů</span>
-                            <span class="text-slate-400 text-xs mt-1">JPG / PNG / WebP – více souborů najednou</span>
-                            <input type="file" id="images" name="images[]" multiple accept="image/*" class="hidden">
-                        </label>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Obrázky knihy</label>
+                        <div class="w-full">
+                            <label for="images" class="flex flex-col items-center justify-center w-full h-24 border-2 border-slate-600 border-dashed rounded-lg cursor-pointer bg-slate-800/30 hover:bg-slate-700/50 hover:border-blue-400 transition-colors">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <span id="file-title" class="text-sm text-slate-400 font-semibold">Klikni pro výběr souborů</span>
+                                    <span id="file-info" class="text-xs text-slate-500 mt-1 text-center px-4">Žádné soubory nebyly vybrány</span>
+                                </div>
+                                <input type="file" id="images" name="images[]" multiple accept="image/*" class="hidden">
+                            </label>
+                        </div>
                     </div>
 
                     <div class="sm:col-span-2 flex justify-end gap-3 pt-2 border-t border-slate-100">
@@ -88,6 +92,34 @@
                 </div>
             </form>
         </div>
+        <script>
+            // Najdeme naše HTML prvky podle ID
+            const fileInput = document.getElementById('images');
+            const fileTitle = document.getElementById('file-title');
+            const fileInfo = document.getElementById('file-info');
+
+            // Posloucháme událost 'change' (změna hodnoty v inputu)
+            fileInput.addEventListener('change', function(event) {
+                const files = event.target.files;
+                
+                if (files.length === 0) {
+                    // Uživatel výběr zrušil
+                    fileTitle.textContent = 'Klikněte pro výběr souborů';
+                    fileTitle.className = 'text-sm text-slate-400 font-semibold';
+                    fileInfo.textContent = 'Žádné soubory nebyly vybrány';
+                } else if (files.length === 1) {
+                    // Vybrán 1 soubor - ukážeme jeho název
+                    fileTitle.textContent = 'Soubor připraven';
+                    fileTitle.className = 'text-sm text-blue-400 font-bold';
+                    fileInfo.textContent = files[0].name;
+                } else {
+                    // Vybráno více souborů - ukážeme počet
+                    fileTitle.textContent = 'Soubory připraveny';
+                    fileTitle.className = 'text-sm text-blue-400 font-bold';
+                    fileInfo.textContent = 'Vybráno celkem: ' + files.length + ' souborů';
+                }
+            });
+        </script>
     </main>
 
     <?php require_once '../app/views/layout/footer.php'; ?>
