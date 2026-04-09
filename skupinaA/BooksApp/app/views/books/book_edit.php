@@ -1,34 +1,4 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <title>Upravit knihu</title>
-</head>
-<body class="bg-slate-50 min-h-screen flex flex-col">
-
-    <header class="bg-slate-800 text-white shadow-lg">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <h1 class="text-2xl font-bold tracking-tight text-indigo-300">📚 Aplikace Knihovna</h1>
-            <nav>
-                <ul class="flex flex-wrap gap-2">
-                    <li>
-                        <a href="<?= BASE_URL ?>/index.php"
-                           class="inline-block bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200">
-                            Domů – seznam knih
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?= BASE_URL ?>/index.php?url=book/create"
-                           class="inline-block bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200">
-                            + Přidat knihu
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<?php require_once '../app/views/layout/header.php'; ?>
 
     <main class="flex-1 max-w-2xl mx-auto w-full px-4 py-8">
 
@@ -136,9 +106,4 @@
         </div>
     </main>
 
-    <footer class="bg-slate-800 text-slate-400 text-center text-sm py-4 mt-auto">
-        <p>&copy; WA 2026 – jednoduchá PHP aplikace pro správu knih (výukový projekt)</p>
-    </footer>
-
-</body>
-</html>
+    <?php require_once '../app/views/layout/footer.php'; ?>
