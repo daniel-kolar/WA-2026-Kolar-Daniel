@@ -233,11 +233,21 @@ class BookController {
             $link = htmlspecialchars($_POST['link'] ?? '');
             $description = htmlspecialchars($_POST['description'] ?? '');
 
-            // Prozatímní zástupce pro obrázky
-            //$uploadedImages = []; 
-            // ZDE JE ZMĚNA: Zavolání metody, která zpracuje soubory v $_FILES
-            // Vrátí nám hezké pole s novými názvy (např. ['book_123.jpg', 'book_456.png'])
-            $uploadedImages = $this->processImageUploads(); 
+            // Zpracování nově nahraných souborů z $_FILES
+            $uploadedImages = $this->processImageUploads();
+
+            // Záchranná podmínka: pokud uživatel neposlal žádné nové obrázky,
+            // načteme stávající obrázky z DB a zachováme je (zabráníme jejich smazání)
+            if (empty($uploadedImages)) {
+                require_once '../app/models/Database.php';
+                require_once '../app/models/Book.php';
+                $tempDb = new Database();
+                $tempBookModel = new Book($tempDb->getConnection());
+                $currentBook = $tempBookModel->getById($id);
+                if ($currentBook && !empty($currentBook['images'])) {
+                    $uploadedImages = json_decode($currentBook['images'], true) ?? [];
+                }
+            }
 
             // 2. Komunikace s databází a modelem
             require_once '../app/models/Database.php';
@@ -295,10 +305,18 @@ class BookController {
                     // Zjištění koncovky (např. jpg, png)
                     $fileExtension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
 
-                    // Můžeme zde přidat i kontrolu povolených formátů (volitelné)
+                    // Kontrola přípony souboru
                     $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
                     if (!in_array($fileExtension, $allowedExtensions)) {
-                        continue; // Přeskočíme nepodporovaný soubor
+                        continue;
+                    }
+
+                    // Kontrola skutečného MIME typu (čte magické bajty souboru, ne jen příponu)
+                    $finfo = new finfo(FILEINFO_MIME_TYPE);
+                    $mimeType = $finfo->file($tmpName);
+                    $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+                    if (!in_array($mimeType, $allowedMimeTypes)) {
+                        continue;
                     }
 
                     // 1. Vygenerování unikátního jména pomocí aktuálního času a náhodného řetězce

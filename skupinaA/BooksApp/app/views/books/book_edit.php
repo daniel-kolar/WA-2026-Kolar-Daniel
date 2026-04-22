@@ -84,6 +84,25 @@
 
                     <div class="md:col-span-2">
                         <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Obrázky knihy</label>
+
+                        <?php
+                        $existingImages = json_decode($book['images'] ?? '[]', true);
+                        if (!empty($existingImages)): ?>
+                            <div class="mb-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                <p class="text-xs font-semibold text-slate-500 mb-2">Aktuálně uložené obrázky:</p>
+                                <ul class="space-y-1">
+                                    <?php foreach ($existingImages as $img): ?>
+                                        <li class="text-sm text-slate-700">
+                                            <?= htmlspecialchars($img) ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <p class="text-xs text-amber-600 mt-2 font-medium">
+                                    Upozornění: Pokud nyní nahrajete nové soubory, tyto staré budou přepsány.
+                                </p>
+                            </div>
+                        <?php endif; ?>
+
                         <div class="w-full">
                             <label for="images" class="flex flex-col items-center justify-center w-full h-24 border-2 border-slate-600 border-dashed rounded-lg cursor-pointer bg-slate-800/30 hover:bg-slate-700/50 hover:border-blue-400 transition-colors">
                                 <div class="flex flex-col items-center justify-center pt-5 pb-6">

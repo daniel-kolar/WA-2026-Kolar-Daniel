@@ -14,31 +14,48 @@
                 <h1 class="text-2xl font-bold tracking-tight text-indigo-300">📚 Aplikace Knihovna</h1>
             </a>
             <nav>
-                <ul class="flex flex-wrap gap-2">
+                <ul class="flex flex-wrap items-center gap-2">
                     <li>
                         <a href="<?= BASE_URL ?>/index.php"
                            class="inline-block bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200">
-                            Domů – seznam knih
+                            Domů
                         </a>
                     </li>
-                    <li>
-                        <a href="<?= BASE_URL ?>/index.php?url=book/create"
-                           class="inline-block bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200">
-                            + Přidat knihu
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?= BASE_URL ?>/index.php?url=auth/register"
-                           class="inline-block bg-emerald-600 hover:bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200">
-                            Registrace
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?= BASE_URL ?>/index.php?url=auth/login"
-                           class="inline-block bg-emerald-600 hover:bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200">
-                            Přihlášení
-                        </a>
-                    </li>
+
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <!-- Přihlášený uživatel -->
+                        <li>
+                            <a href="<?= BASE_URL ?>/index.php?url=book/create"
+                               class="inline-block bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200">
+                                + Přidat knihu
+                            </a>
+                        </li>
+                        <li>
+                            <span class="text-sm text-slate-300 px-2">
+                                Přihlášen: <strong class="text-white"><?= htmlspecialchars($_SESSION['username']) ?></strong>
+                            </span>
+                        </li>
+                        <li>
+                            <a href="<?= BASE_URL ?>/index.php?url=auth/logout"
+                               class="inline-block bg-slate-600 hover:bg-slate-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200">
+                                Odhlásit se
+                            </a>
+                        </li>
+                    <?php else: ?>
+                        <!-- Nepřihlášený uživatel -->
+                        <li>
+                            <a href="<?= BASE_URL ?>/index.php?url=auth/login"
+                               class="inline-block bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200">
+                                Přihlásit se
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?= BASE_URL ?>/index.php?url=auth/register"
+                               class="inline-block bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200">
+                                Registrace
+                            </a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>
