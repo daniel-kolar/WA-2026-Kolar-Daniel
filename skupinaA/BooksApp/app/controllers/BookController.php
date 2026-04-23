@@ -255,13 +255,6 @@ class BookController {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            // 🔒ZMĚNA: Kontrola, zda je uživatel vůbec přihlášen.
-            if (!isset($_SESSION['user_id'])) {
-                $this->addErrorMessage('Pro uložení změn se musíte nejprve přihlásit.');
-                header('Location: ' . BASE_URL . '/index.php?url=auth/login');
-                exit;
-            }
-
             // Načtení knihy pro ověření vlastnictví a zachování obrázků
             require_once '../app/models/Database.php';
             require_once '../app/models/Book.php';
