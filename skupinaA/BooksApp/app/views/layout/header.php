@@ -8,10 +8,10 @@
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col">
 
-    <header class="bg-slate-800 text-white shadow-lg">
+    <header class="bg-slate-400 text-white shadow-lg">
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <a href="<?= BASE_URL ?>/index.php">
-                <h1 class="text-2xl font-bold tracking-tight text-indigo-300">📚 Aplikace Knihovna</h1>
+                <h1 class="text-2xl font-bold tracking-tight text-indigo-300"><img src="<?= BASE_URL ?>/images/logo.svg" alt="Knihovna" class="h-10"></h1>
             </a>
             <nav>
                 <ul class="flex flex-wrap items-center gap-2">
@@ -31,8 +31,8 @@
                             </a>
                         </li>
                         <li>
-                            <span class="text-sm text-slate-300 px-2">
-                                Přihlášen: <strong class="text-white"><?= htmlspecialchars($_SESSION['username']) ?></strong>
+                            <span class="text-sm text-slate-800 px-2">
+                                Přihlášen: <strong class="text-slate-800"><?= htmlspecialchars($_SESSION['username']) ?></strong>
                             </span>
                         </li>
                         <li>
