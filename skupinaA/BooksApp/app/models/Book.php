@@ -22,12 +22,12 @@ class Book {
     }
 
     // Vytvoří nový záznam knihy v databázi a vrátí true/false podle úspěchu operace
-    public function create($title, $author, $category, $subcategory, $year, $price, $isbn, $description, $link, $uploadedImages = []) {
+    public function create($title, $author, $category, $subcategory, $year, $price, $isbn, $description, $link, $uploadedImages = [], $userId = null) {
         $query = "INSERT INTO " . $this->table . "
-                    (title, author, isbn, year, category, subcategory, price, link, description)
+                    (title, author, isbn, year, category, subcategory, price, link, description, images, created_by)
                   VALUES
-                    (:title, :author, :isbn, :year, :category, :subcategory, :price, :link, :description)"; // Používáme pojmenované parametry (placeholders) pro bezpečné vkládání dat do DB (ochrana proti SQL injection)
-        
+                    (:title, :author, :isbn, :year, :category, :subcategory, :price, :link, :description, :images, :created_by)"; // Používáme pojmenované parametry (placeholders) pro bezpečné vkládání dat do DB (ochrana proti SQL injection)
+
         // stmt = statement (příkaz) - Připravíme dotaz pomocí PDO
         $stmt = $this->conn->prepare($query);
 
@@ -53,7 +53,7 @@ class Book {
         $this->link        = htmlspecialchars(strip_tags($this->link));
         $this->description = htmlspecialchars(strip_tags($this->description));
 
-        // Navážeme hodnoty na pojmenované parametry (placeholders) (ochrana proti SQL injection) a provedeme dotaz do DB pomocí PDO 
+        // Navážeme hodnoty na pojmenované parametry (placeholders) (ochrana proti SQL injection) a provedeme dotaz do DB pomocí PDO
         $stmt->bindParam(':title',       $this->title);
         $stmt->bindParam(':author',      $this->author);
         $stmt->bindParam(':isbn',        $this->isbn);
@@ -63,6 +63,8 @@ class Book {
         $stmt->bindParam(':price',       $this->price);
         $stmt->bindParam(':link',        $this->link);
         $stmt->bindParam(':description', $this->description);
+        $stmt->bindValue(':images',      json_encode($uploadedImages));
+        $stmt->bindValue(':created_by',  $userId, PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             return true;

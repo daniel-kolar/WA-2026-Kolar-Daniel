@@ -76,12 +76,14 @@
 
             </dl>
 
+            <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $book['created_by']): ?>
             <div class="flex justify-end gap-3 pt-5 mt-5 border-t border-slate-100">
                 <a href="<?= BASE_URL ?>/index.php?url=book/edit/<?= htmlspecialchars($book['id']) ?>"
                    class="px-5 py-2 rounded-lg text-sm font-medium bg-amber-500 hover:bg-amber-400 text-white transition-colors duration-200 shadow-sm">
                     Upravit knihu
                 </a>
             </div>
+            <?php endif; ?>
         </div>
 
     </main>

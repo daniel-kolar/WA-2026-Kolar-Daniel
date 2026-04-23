@@ -60,6 +60,7 @@
                                                class="inline-block bg-indigo-100 hover:bg-indigo-200 text-indigo-700 text-xs font-medium px-3 py-1 rounded-lg transition-colors duration-200">
                                                 Detail
                                             </a>
+                                            <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $book['created_by']): ?>
                                             <a href="<?= BASE_URL ?>/index.php?url=book/edit/<?= $book['id'] ?>"
                                                class="inline-block bg-amber-100 hover:bg-amber-200 text-amber-700 text-xs font-medium px-3 py-1 rounded-lg transition-colors duration-200">
                                                 Upravit
@@ -69,6 +70,7 @@
                                                class="inline-block bg-red-100 hover:bg-red-200 text-red-700 text-xs font-medium px-3 py-1 rounded-lg transition-colors duration-200">
                                                 Smazat
                                             </a>
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
